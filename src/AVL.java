@@ -6,6 +6,24 @@ public class AVL {
 		this.root = root;
 	}
 	
+	
+	private void updateHeight(Node node) {
+	   
+		if (node.leftNode == null && node.rightNode == null) // node is a leaf
+	      node.height = 0;
+	    else if (node.leftNode == null) // node n√£o tem Sub√°rvore esquerda
+	    	node.height = 1 + ((Node)(node.rightNode)).height;
+	    
+	    else if (node.rightNode == null) // node n√£o tem Sub√°rvore direita
+	      node.height = 1 + ((Node)(node.leftNode)).height;
+	    else
+	      node.height = 1 +
+	        Math.max(((Node)(node.rightNode)).height,
+	        ((Node)(node.leftNode)).height);
+	  }
+
+	
+	
 	public void printPreOrder() {
 		printPreOrder(this.root);
 	}
@@ -39,8 +57,31 @@ public class AVL {
 		printInOrder(this.root);
 	}
 	
-	public void printBalanceamentFactors() {
-		printBalanceamentFactors(this.root);
+	public void setBalanceFactors() {
+		
+		setBalanceFactors(this.root);
+		
+	}
+	
+	public void setBalanceFactors(Node root) {
+		//visitar cada n√≥ e fazer a conta 
+		//FB = Altura (SAE) ‚Äì altura(SAD)
+
+		if (root == null)
+			return;
+		
+		setBalanceFactors(root.getLeftNode());
+		System.out.println(root.value);
+		root.setBf(height(root.getLeftNode()) -height(root.getRightNode()) );
+		
+		
+		setBalanceFactors(root.getRightNode());
+
+	}
+	
+	
+	public void printBalanceFactors() {
+		printBalanceFactors(this.root);
 	}
 	
 	
@@ -62,12 +103,12 @@ public class AVL {
 	    if (node == null) {
 	        return 0;
 	    }
-	    // Calcula a profundidade da ·rvore
+	    // Calcula a profundidade da √°rvore
 	    return 1 + Math.max(calculateDepth(node.leftNode), calculateDepth(node.rightNode));
 	}
 	
 	public boolean isFullBinaryTree() {
-		 int depth = calculateDepth(root); // Calcula a profundidade m·xima da ·rvore
+		 int depth = calculateDepth(root); // Calcula a profundidade m√°xima da √°rvore
 		 
 		 return isFullBinaryTree(root, depth, 0);
 	}
@@ -99,7 +140,7 @@ public class AVL {
 			 
 	}
 	
-	//mÈtodo para achar o menor valor de uma sub-arvore ordenada
+	//m√©todo para achar o menor valor de uma sub-arvore ordenada
 	public Node minValue(Node node)
 	{
 	    Node current = node;
@@ -117,7 +158,7 @@ public class AVL {
 	    if (root == null)
 	      return true;
 
-	    // checa a presenÁa de folhas 
+	    // checa a presen√ßa de folhas 
 	    if (root.leftNode == null && root.rightNode == null) {
 	    	return (d == level + 1);
 	    }	
@@ -151,55 +192,56 @@ public class AVL {
 				if (toDelete.rightNode == null) {
 					root = toDelete.leftNode;
 					toDelete.leftNode = null;
-				} else { //o leftNode È null
+				} else { //o leftNode √© null
 					root = toDelete.rightNode;
 					toDelete.rightNode = null;
 				}
 
 			}
+			updateHeight(root);
 			return;
 		}
 		//verificar os casos
-		//toDelete n„o possui nenhum filho
+		//toDelete n√£o possui nenhum filho
 		if (toDelete.leftNode == null && toDelete.rightNode == null) {
 			System.out.println("Nenhum filho");
 			
-			//saber se o toDelete est· a esq ou dir
+			//saber se o toDelete est√° a esq ou dir
 			Node parent = getParent(toDelete); 
 			if (parent.leftNode == toDelete )
 				parent.leftNode = null;
 			else 
 				parent.rightNode = null;
 			
-			System.out.println("NÛ removido: " + toDelete.value);
+			System.out.println("N√≥ removido: " + toDelete.value);
 			return;
 		}
 		//toDelete possui apenas um filho
 		if (toDelete.leftNode == null && toDelete.rightNode != null) {
-			System.out.println("Apenas um filho e na direita cujo valor È " + toDelete.rightNode.value);	
+			System.out.println("Apenas um filho e na direita cujo valor √© " + toDelete.rightNode.value);	
 			Node parent = getParent(toDelete); 
 			
-			//verificar se o toDelete est· a esq ou a direita em relacao ao parent
+			//verificar se o toDelete est√° a esq ou a direita em relacao ao parent
 			if (parent.leftNode == toDelete )
 				parent.leftNode = toDelete.rightNode;
 			else 
 				parent.rightNode = toDelete.rightNode;
 			
-			System.out.println("NÛ removido: " + toDelete.value);
+			System.out.println("N√≥ removido: " + toDelete.value);
 			
 			return;
 		}
 			else if (toDelete.leftNode != null && toDelete.rightNode == null){
-			System.out.println("Apenas um filho e na esquerda cujo valor È " + toDelete.leftNode.value);
+			System.out.println("Apenas um filho e na esquerda cujo valor √© " + toDelete.leftNode.value);
 			Node parent = getParent(toDelete); 
 			
-			//verificar se o toDelete est· a esq ou a direita em relacao ao parent
+			//verificar se o toDelete est√° a esq ou a direita em relacao ao parent
 			if (parent.leftNode == toDelete )
 				parent.leftNode = toDelete.leftNode;
 			else 
 				parent.rightNode = toDelete.leftNode;
 				
-			System.out.println("NÛ removido: " + toDelete.value);
+			System.out.println("N√≥ removido: " + toDelete.value);
 	
 		
 		} else 
@@ -226,8 +268,9 @@ public class AVL {
 	
 	public Node insertNode(Node root, Node newNode) {
 		
-		//insere novo nÛ na folha a partir de 
+		//insere novo n√≥ na folha a partir de 
 		//comparacoes
+		
 		if (root == null) {
 			return newNode;
 		}
@@ -246,6 +289,19 @@ public class AVL {
 			root.setRightNode(insertNode(root.rightNode,newNode)); 
 			 
 		}
+		updateHeight(root);
+		int balanceFactorNode = 0, left = 0, right=0;
+		
+		if (newNode.leftNode != null)
+			left = newNode.leftNode.height;
+		if (newNode.rightNode != null)
+			right = newNode.rightNode.height;
+		
+		balanceFactorNode =  left - right; 
+		System.out.println("avaliando " + newNode.value + " BF " + balanceFactorNode);
+		if (balanceFactorNode == 2 || balanceFactorNode == -2 )
+			System.out.println("Desbalanceou ao inserir " + newNode.value );
+
 		return root;		
 	}
 	
@@ -260,7 +316,7 @@ public class AVL {
 		printLeafs(root.getLeftNode());
 		if (isLeaf(root)) {
 			System.out.println(root.value);
-			//System.out.println(" NÌvel: " + depth(root));
+			//System.out.println(" N√≠vel: " + depth(root));
 		}			
 		printLeafs(root.getRightNode());	
 	}
@@ -275,13 +331,13 @@ public class AVL {
 
 	}
 	
-	public void printBalanceamentFactors(Node root) {
+	public void printBalanceFactors(Node root) {
 		if (root == null)
 			return;
 		
-		printBalanceamentFactors(root.getLeftNode());
+		printBalanceFactors(root.getLeftNode());
 		System.out.println("Node = " + root.value + " | BF = " + root.getBf());
-		printBalanceamentFactors(root.getRightNode());
+		printBalanceFactors(root.getRightNode());
 
 	}
 	
@@ -293,7 +349,7 @@ public class AVL {
 	
 	
 	public boolean isStrictBinaryTree(Node root) {
-		//condiÁ„o de saÌda
+		//condi√ß√£o de sa√≠da
 		if (root == null) return true;
 		
 		if (root.degree() == 1)	return false;
@@ -320,8 +376,21 @@ public class AVL {
 		return root;
 	}
 
-	//profundidade
+	//altura 
+	public int height() {
+    	return height(root)-1;
+    }
+    public int height(Node subTree){
+        if(subTree==null)
+            return 0;
+        else{
+            int i=height(subTree.getLeftNode());
+            int j=height(subTree.getRightNode());
+            return (i<j)?(j+1):(i+1);
+        }
+    }
 	
+	//profundidade
 	public int depth(Node node) {
 		return depth(this, node);
 	}
