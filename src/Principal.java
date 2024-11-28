@@ -25,7 +25,7 @@ public class Principal {
 		
 		//System.out.println(teste.isLeaf(raiz));
 		//System.out.println(teste.isInternal(raiz));
-		//System.out.println("N�vel: " +teste.depth(raiz));
+		//System.out.println("Nível: " +teste.depth(raiz));
 	    
 		teste.printInOrder();
 		
@@ -38,10 +38,17 @@ public class Principal {
 		System.out.println("Internos");
 		teste.printInternals();
 		
-		
+		System.out.println("Todos os nós em ordem");
 		teste.printInOrder();
 		
+		System.out.println("Calculando os fatores de balanceamento");
+		teste.setBalanceFactors();
+		
+		
 		System.out.println("Verificando fator de Balanceamento");
-		teste.printBalanceamentFactors();
+		teste.printBalanceFactors();
+		
+		System.out.println("Altura do 5 " + teste.height(cinco));
+		System.out.println(cinco.height);
 	}
 }
