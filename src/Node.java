@@ -2,6 +2,7 @@
 public class Node {
     Node leftNode, rightNode;
     int value, bf=0;
+    int height=0;
     //bf = altura sub. esquerda - 
     //   = altura sub. direita
 
